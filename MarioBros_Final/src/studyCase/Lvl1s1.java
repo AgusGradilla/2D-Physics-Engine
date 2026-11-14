@@ -32,13 +32,16 @@ public class Lvl1s1 extends Stage {
         //Secciones del suelo, se cuentan por bloque no por pixel
         createFloorSection(0, 69);
         createFloorSection(71, 86);
-        createFloorSection(89, 210); 
+        createFloorSection(89, 155); 
+        createFloorSection(157, 210);
 
         //Tuberias
         spawnObject(new Pipe(28 * TILE_SIZE, ROW_1 + TILE_SIZE, GROUND_Y)); 
         spawnObject(new Pipe(38 * TILE_SIZE, ROW_1, GROUND_Y));
         spawnObject(new Pipe(46 * TILE_SIZE, ROW_1 - TILE_SIZE, GROUND_Y));
         spawnObject(new Pipe(57 * TILE_SIZE, ROW_1 - TILE_SIZE, GROUND_Y));
+        spawnObject(new Pipe(165 * TILE_SIZE, ROW_1 + TILE_SIZE, GROUND_Y));
+        spawnObject(new Pipe(181 * TILE_SIZE, ROW_1 + TILE_SIZE, GROUND_Y));
 
         //Bloques de ladrillos y de objetos
         spawnObject(new QBlock(16 * TILE_SIZE, ROW_1, this, QBlock.ITEM_COIN));
@@ -61,8 +64,12 @@ public class Lvl1s1 extends Stage {
 
         // Zona final
         spawnObject(new BrickBlock(91 * TILE_SIZE, ROW_2, this));
-        spawnObject(new QBlock(94 * TILE_SIZE, ROW_1, this, QBlock.ITEM_COIN)); 
+        spawnObject(new BrickBlock(92 * TILE_SIZE, ROW_2, this));
+        spawnObject(new BrickBlock(93 * TILE_SIZE, ROW_2, this));
+        spawnObject(new QBlock(94 * TILE_SIZE, ROW_2, this, QBlock.ITEM_COIN)); 
+        spawnObject(new BrickBlock(94 * TILE_SIZE, ROW_1, this));
         spawnObject(new BrickBlock(100 * TILE_SIZE, ROW_1, this));
+        spawnObject(new BrickBlock(101 * TILE_SIZE, ROW_1, this));
         spawnObject(new QBlock(106 * TILE_SIZE, ROW_1, this, QBlock.ITEM_COIN)); 
         spawnObject(new QBlock(109 * TILE_SIZE, ROW_1, this, QBlock.ITEM_COIN)); 
         spawnObject(new QBlock(109 * TILE_SIZE, ROW_2, this, QBlock.ITEM_MUSHROOM)); 
@@ -78,6 +85,10 @@ public class Lvl1s1 extends Stage {
         spawnObject(new BrickBlock(132 * TILE_SIZE, ROW_1, this));
         spawnObject(new QBlock(131 * TILE_SIZE, ROW_2, this, QBlock.ITEM_COIN));
         spawnObject(new QBlock(132 * TILE_SIZE, ROW_2, this, QBlock.ITEM_COIN));
+        spawnObject(new BrickBlock(170 * TILE_SIZE, ROW_1, this));
+        spawnObject(new BrickBlock(171 * TILE_SIZE, ROW_1, this));
+        spawnObject(new QBlock(172 * TILE_SIZE, ROW_1, this, QBlock.ITEM_COIN));
+        spawnObject(new BrickBlock(173 * TILE_SIZE, ROW_1, this));
 
 
 
@@ -96,12 +107,47 @@ public class Lvl1s1 extends Stage {
         spawnObject(new Goomba(97 * TILE_SIZE, GROUND_Y - 32, playerRef));
         spawnObject(new Goomba(99 * TILE_SIZE, GROUND_Y - 32, playerRef));
 
+        spawnObject(new Goomba(120 * TILE_SIZE, GROUND_Y - 32, playerRef));
+        spawnObject(new Goomba(122 * TILE_SIZE, GROUND_Y - 32, playerRef));
+        spawnObject(new Goomba(126 * TILE_SIZE, GROUND_Y - 32, playerRef));
+        spawnObject(new Goomba(128 * TILE_SIZE, GROUND_Y - 32, playerRef));
+        spawnObject(new Goomba(134 * TILE_SIZE, GROUND_Y - 32, playerRef));
+        spawnObject(new Goomba(136 * TILE_SIZE, GROUND_Y - 32, playerRef));
+        spawnObject(new Goomba(176 * TILE_SIZE, GROUND_Y - 32, playerRef));
+        spawnObject(new Goomba(177 * TILE_SIZE, GROUND_Y - 32, playerRef));
+
+
         //Escaleras,
         createStairs(136, 139, true); 
         createStairs(142, 145, false); 
-        createStairs(149, 153, true); 
-        createStairs(155, 155, false); 
-        createStairs(181, 189, true); 
+        createStairs(150, 153, true); 
+        spawnObject(new Floor(
+            154 * TILE_SIZE,
+            GROUND_Y - (4 * TILE_SIZE),
+            32,
+            4 * TILE_SIZE,
+            false
+        ));
+        createStairs(157, 160, false);
+        createStairs(183, 190, true); 
+        spawnObject(new Floor(
+            191 * TILE_SIZE,
+            GROUND_Y - (8 * TILE_SIZE),
+            32,
+            8 * TILE_SIZE,
+            false
+        ));
+
+        // Bandera
+        spawnObject(new Floor(
+            200 * TILE_SIZE,
+            GROUND_Y - (11 * TILE_SIZE),
+            32,
+            11 * TILE_SIZE,
+            false
+        ));
+
+
     }
 
     // Metodos auxiliares
