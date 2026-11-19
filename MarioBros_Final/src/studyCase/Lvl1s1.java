@@ -10,6 +10,7 @@ public class Lvl1s1 extends Stage {
 	
 	//Para poder despertar enemigos
 	private Player playerRef;
+    private LevelFlag levelFlag;
 
     private final int TILE_SIZE = 32;
     private final int GROUND_Y = 416;
@@ -22,6 +23,10 @@ public class Lvl1s1 extends Stage {
         this.playerRef = player;
         this.stageName = "1-1";
         loadLevel();
+    }
+
+    public LevelFlag getLevelFlag() {
+        return levelFlag;
     }
 
     @Override
@@ -57,7 +62,6 @@ public class Lvl1s1 extends Stage {
         spawnObject(new QBlock(78 * TILE_SIZE, ROW_1, this, QBlock.ITEM_MUSHROOM)); 
         spawnObject(new BrickBlock(79 * TILE_SIZE, ROW_1, this));
 
-        
         for(int i = 80; i <= 87; i++) {
             spawnObject(new BrickBlock(i * TILE_SIZE, ROW_2, this));
         }
@@ -90,11 +94,6 @@ public class Lvl1s1 extends Stage {
         spawnObject(new QBlock(172 * TILE_SIZE, ROW_1, this, QBlock.ITEM_COIN));
         spawnObject(new BrickBlock(173 * TILE_SIZE, ROW_1, this));
 
-
-
-
-
-
         // Enemigos
         spawnObject(new Goomba(22 * TILE_SIZE, GROUND_Y - 32, playerRef)); 
         spawnObject(new Goomba(40 * TILE_SIZE, GROUND_Y - 32, playerRef)); 
@@ -116,8 +115,7 @@ public class Lvl1s1 extends Stage {
         spawnObject(new Goomba(176 * TILE_SIZE, GROUND_Y - 32, playerRef));
         spawnObject(new Goomba(177 * TILE_SIZE, GROUND_Y - 32, playerRef));
 
-
-        //Escaleras,
+        //Escaleras
         createStairs(136, 139, true); 
         createStairs(142, 145, false); 
         createStairs(150, 153, true); 
@@ -138,16 +136,15 @@ public class Lvl1s1 extends Stage {
             false
         ));
 
-        // Bandera
-        spawnObject(new Floor(
+        // Bandera (reemplaza el placeholder Floor)
+        MarioHUD hudRef = (playerRef instanceof Mario) ? ((Mario) playerRef).getHud() : null;
+        levelFlag = new LevelFlag(
             200 * TILE_SIZE,
             GROUND_Y - (11 * TILE_SIZE),
-            32,
             11 * TILE_SIZE,
-            false
-        ));
-
-
+            hudRef
+        );
+        spawnObject(levelFlag);
     }
 
     // Metodos auxiliares

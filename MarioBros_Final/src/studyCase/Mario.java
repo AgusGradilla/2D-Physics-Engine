@@ -11,10 +11,10 @@ import game.PowerUP;
 
 public class Mario extends Player {
     
-//	Referencia especifica de los cambios que realice o se le realicen a Mario
+    // Referencia especifica de los cambios que realice o se le realicen a Mario
     private MarioHUD hud;
     
-// 	Cosas para animacion
+    // Cosas para animacion
     protected Image spriteSheet; 
     protected final int SPRITE_WIDTH = 16;  
     protected final int SCALE = 2; 
@@ -26,52 +26,80 @@ public class Mario extends Player {
     private int spriteOffset = 0; 
     private int spriteLimit = 1; 
 
-//	Estados específicos de Mario
-    // Podria ser un enum a parte
+    // Estados específicos de Mario
     public static final int MARIO_SMALL = 0;
     public static final int MARIO_BIG   = 1;
     public static final int MARIO_FIRE  = 2;
 
     private int currentPower = MARIO_SMALL;
 
+    // Estados de la bandera
+    private boolean onFlag = false;
+    private int flagSpriteOffset = 9;
+    private boolean restartPressed = false;
+
     public Mario(double x, double y, MarioHUD hud) {
-        super(x, y, 16 * 2, 16 * 2); // Llamar al constructor del padre con el tamaño inicial
+        super(x, y, 16 * 2, 16 * 2);
         this.hud = hud;
         loadImg();
     }
 
-//	En teoria, el desarrollador cambiaria el path a lo que sea que el tenga
     private void loadImg() {
         spriteSheet = Toolkit.getDefaultToolkit().getImage("src/images/spr_Mario.png");
     }
     
+    public MarioHUD getHud() {
+        return hud;
+    }
+
     public boolean isBig() { 
     	return currentPower != MARIO_SMALL; 
     } 
 
-//	Se sobreescribe kill para agregar logica visual especifica de Mario
+    public void setOnFlag(boolean onFlag) {
+        this.onFlag = onFlag;
+        if (onFlag) {
+            this.playerDir = 1;
+            this.rb.velocidad.setX(0);
+            this.rb.velocidad.setY(0);
+            this.aniIndex = 0;
+            this.aniTick = 0;
+        } else {
+            this.rb.isStatic = false;
+        }
+    }
+
+    public void setRestartPressed(boolean restartPressed) {
+        // Solo guarda la pulsación si Mario ya está en la bandera
+        if (this.onFlag) {
+            this.restartPressed = restartPressed;
+        }
+    }
+
+    public boolean canRestartFromFlag() {
+        return this.onFlag && this.restartPressed;
+    }
+
     @Override
     public void kill() {
         if (dead) return;
         
-        if (hud != null) hud.removeLife(); //Actualizar vidas
+        if (hud != null) hud.removeLife();
 
-        setPowerUp(MARIO_SMALL); // Mario siempre muere en su forma pequeña
-        this.spriteOffset = 8; // Sprite de muerte
+        setPowerUp(MARIO_SMALL);
+        this.spriteOffset = 8; 
         this.spriteLimit = 1;
         this.aniIndex = 0;
         
-        super.kill(); // Llamar a la lógica física del padre (salto, trigger, booleano dead)
+        super.kill();
     }
 
-//	Como cambia el estado de Mario
     public void setPowerUp(int newPower) {
         if (this.currentPower == newPower) return;
 
         boolean wasSmall = (this.currentPower == MARIO_SMALL);
         boolean willBeSmall = (newPower == MARIO_SMALL);
 
-        // Ajustar tamaño del collider si cambiamos de tamaño
         if (wasSmall != willBeSmall) {
             int newHeightOriginal = willBeSmall ? HEIGHT_SMALL : HEIGHT_BIG;
             int newHeightScaled = newHeightOriginal * SCALE;
@@ -79,7 +107,6 @@ public class Mario extends Player {
             double currentHeight = col.getHeight();
             double diff = newHeightScaled - currentHeight;
             
-            // Ajustamos posición Y para que crezca hacia arriba
             this.rb.posicion.setY(this.rb.posicion.getY() - diff);
             this.col.setSize(SPRITE_WIDTH * SCALE, newHeightScaled);
         }
@@ -106,20 +133,18 @@ public class Mario extends Player {
         }
     }
 
-//	Resolucion de colisiones en cuanto a logica, para resoluciones fisicas ver RulerOfEverything    
     @Override
     public void onCollisionEnter(GameObject other) {
         if(dead) return;
 
         if (other instanceof PowerUP) {
              PowerUP p = (PowerUP) other;
-             p.applyEffect(this); // PowerUP necesita saber que es un Player
+             p.applyEffect(this);
              p.destroy();
         } else if (other instanceof Enemy) {
             Enemy enemigo = (Enemy) other;
             if (enemigo.isDead()) return;
 
-            //Si se activa la colision desde arriba del enemigo, y desde abajo de Mario, es que lo piso.
             boolean isFalling = this.rb.velocidad.getY() > 0;
             boolean isAbove = this.col.getBottom() < (enemigo.getCollider().getTop() + 20);
 
@@ -133,11 +158,19 @@ public class Mario extends Player {
         }
     }
 
-//	Animaciones
     private void updateAnimationState() {
         int oldOffset = spriteOffset;
 
-        if (!rb.isGrounded) {
+        if (onFlag) {
+            if (Math.abs(rb.velocidad.getY()) > 0) {
+                spriteOffset = flagSpriteOffset; 
+                spriteLimit = 2; // Alterna entre los 2 sprites de bajada
+                aniSpeed = 8;
+            } else {
+                spriteOffset = 0; // Sprite quieto al llegar al final
+                spriteLimit = 1;
+            }
+        } else if (!rb.isGrounded) {
             spriteOffset = 7; 
             spriteLimit = 1; 
         } else if (Math.abs(rb.velocidad.getX()) > 10) { 
@@ -167,11 +200,12 @@ public class Mario extends Player {
     
     @Override
     public void update(double dt) {
-        super.updateMovement(dt); //El movimiento ya esta definido en el padre
+        if (!onFlag) {
+            super.updateMovement(dt);
+        }
 
         if (dead) return;
 
-        // Animaciones especificas de Mario
         updateAnimationState();
         updateAnimationTick();
     }
@@ -181,7 +215,6 @@ public class Mario extends Player {
         int x = (int) rb.posicion.getX();
         int y = (int) rb.posicion.getY();
         
-        // Parpadeo para mostrar graficamente el periodo de invencibilidad
         if (invincible) { 
             if ((int)(invincibilityTimer * 20) % 2 == 0) return; 
         }
@@ -197,7 +230,6 @@ public class Mario extends Player {
         int srcW = srcX + SPRITE_WIDTH;
         int srcH = srcY + currentSpriteHeight;
 
-        // Dependiendo de la direccion es si se dibuja en espejo los sprites o no
         if (playerDir == -1) {
             g.drawImage(spriteSheet, x + w, y, x, y + h, srcX, srcY, srcW, srcH, null);
         } else {

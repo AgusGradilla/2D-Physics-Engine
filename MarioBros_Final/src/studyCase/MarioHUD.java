@@ -11,12 +11,14 @@ public class MarioHUD implements GameUI {
     private FontLoader font;
     private Image coinIcon, livesIcon;
     
-    // Variables especificas de Mario
     private int score = 0;
     private int coins = 0;
     private int lives = 3;
     private float time = 400; 
     private String worldName = "DEFAULT";
+
+    private boolean timerPaused = false;
+    private boolean showRestartText = false;
 
     public MarioHUD() {
         this.font = new FontLoader("src/images/fontMayus.png");
@@ -24,28 +26,38 @@ public class MarioHUD implements GameUI {
         this.livesIcon = Toolkit.getDefaultToolkit().getImage("src/images/1-UP.png");
     }
     
-    //Setter
     public void setWorldName(String name) {
         this.worldName = name;
     }
 
-    //Getters
-    public int getLives() { return lives;}
+    public void pauseTimer() {
+        this.timerPaused = true;
+    }
+
+    public void setShowRestartText(boolean show) {
+        this.showRestartText = show;
+    }
+
+    public int getLives() { return lives; }
     public double getTime() { return time; }
     
-    //Metodos para actualizar estado actual del juego
-    public void resetTime() { this.time = 400; }
-    public void removeLife() { lives--; }
+    public void resetTime() { 
+        this.time = 400; 
+        this.timerPaused = false;
+        this.showRestartText = false;
+    }
     
-    // Metodos propios de Mario (no están en la interfaz, pero el Integrador los usa)
+    public void removeLife() { lives--; }
     public void addScore(int points) { score += points; }
     public void addCoin() { coins++; addScore(200); }
 
     @Override
     public void update(double dt) {
-        time -= dt;
-        if (time < 0) {
-        	time = 0;
+        if (!timerPaused) {
+            time -= dt;
+            if (time < 0) {
+                time = 0;
+            }
         }
     }
 
@@ -69,8 +81,11 @@ public class MarioHUD implements GameUI {
         font.drawText(g, String.format("%03d", (int)time), 695, topY + 25);
         
         if(lives <= 0) {
-        	font.drawText(g, "GAME OVER", 350, topY + 225);
+            font.drawText(g, "GAME OVER", 350, topY + 225);
         }
-        
+
+        if (showRestartText) {
+            font.drawText(g, "PRESIONA R PARA REINICIAR EL NIVEL", 140, topY + 225);
+        }
     }
 }

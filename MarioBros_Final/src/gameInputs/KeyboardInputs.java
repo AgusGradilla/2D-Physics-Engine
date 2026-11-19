@@ -5,22 +5,23 @@ import java.awt.event.KeyListener;
 
 import game.Player;
 
-
 public class KeyboardInputs implements KeyListener {
 
     private Player player; 
+    private boolean restartPressed = false;
 
-    // Recibe al jugador para poder moverlo
     public KeyboardInputs(Player player) {
         this.player = player;
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-        // Que detecte la letra como tal, no lo ocupamos
+    public boolean isRestartPressed() {
+        return restartPressed;
     }
 
-    //Cuando se mantiene presionada x tecla
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -38,21 +39,26 @@ public class KeyboardInputs implements KeyListener {
                 
             case KeyEvent.VK_S:
             case KeyEvent.VK_DOWN:
-                // Para esta implementacion, no se utilizo.
                 break;
                 
             case KeyEvent.VK_D:
             case KeyEvent.VK_RIGHT:
                 player.setRight(true);
                 break;
+
             case KeyEvent.VK_X:
             case KeyEvent.VK_SHIFT:
-            	player.setRun(true);
-            	break;
+                player.setRun(true);
+                break;
+
+            case KeyEvent.VK_R:
+                if (player instanceof studyCase.Mario) {
+                    ((studyCase.Mario) player).setRestartPressed(true);
+                }
+                break;
         }
     }
 
-    //Cuando se suelta x letra
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -76,10 +82,15 @@ public class KeyboardInputs implements KeyListener {
             case KeyEvent.VK_RIGHT:
                 player.setRight(false);
                 break;
+
             case KeyEvent.VK_X:
             case KeyEvent.VK_SHIFT:
-            	player.setRun(false);
-            	break;
+                player.setRun(false);
+                break;
+
+            case KeyEvent.VK_R:
+                restartPressed = false;
+                break;
         }
     }
 }
