@@ -38,7 +38,7 @@ public class Lvl1s1 extends Stage {
         createFloorSection(0, 69);
         createFloorSection(71, 86);
         createFloorSection(89, 155); 
-        createFloorSection(157, 210);
+        createFloorSection(157, 215);
 
         //Tuberias
         spawnObject(new Pipe(28 * TILE_SIZE, ROW_1 + TILE_SIZE, GROUND_Y)); 
@@ -145,6 +145,10 @@ public class Lvl1s1 extends Stage {
             hudRef
         );
         spawnObject(levelFlag);
+
+        // Castillo
+        spawnObject(new Castle(204 * TILE_SIZE, GROUND_Y - 160));
+
     }
 
     // Metodos auxiliares

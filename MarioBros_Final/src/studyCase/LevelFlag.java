@@ -22,7 +22,7 @@ public class LevelFlag extends GameObject {
     private MarioHUD hud;
 
     private final int POLE_SRC_X = 0,  POLE_SRC_Y = 32, POLE_SRC_W = 16, POLE_SRC_H = 168;
-    private final int FLAG_SRC_X = 32, FLAG_SRC_Y = 32, FLAG_SRC_W = 16, FLAG_SRC_H = 16;
+    private final int FLAG_SRC_X = 33, FLAG_SRC_Y = 32, FLAG_SRC_W = 20, FLAG_SRC_H = 16;
 
     public LevelFlag(double x, double y, double height, MarioHUD hud) {
         super();
