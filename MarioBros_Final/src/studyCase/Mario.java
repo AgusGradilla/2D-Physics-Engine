@@ -35,7 +35,7 @@ public class Mario extends Player {
 
     // Estados de la bandera
     private boolean onFlag = false;
-    private int flagSpriteOffset = 9;
+    private int flagSpriteOffset = 5;
     private boolean restartPressed = false;
 
     public Mario(double x, double y, MarioHUD hud) {
